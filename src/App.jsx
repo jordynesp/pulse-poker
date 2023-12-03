@@ -1,12 +1,24 @@
 import React from 'react';
+import { cyan } from "@mui/material/colors";
+import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 import Home from './components/Home';
+import NavBar from './components/NavBar';
 
-function App() {
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: cyan[500],
+        },
+    },
+});
+
+const App = () => {
     return (
-        <div>
+        <ThemeProvider theme={theme}>
+            <NavBar />
             <Router>
                 <section>
                     <Routes>
@@ -14,7 +26,7 @@ function App() {
                     </Routes>
                 </section>
             </Router>
-        </div>
+        </ThemeProvider>
     );
 }
 
