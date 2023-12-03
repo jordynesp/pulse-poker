@@ -1,5 +1,5 @@
 import React from 'react';
-import { cyan } from "@mui/material/colors";
+import { cyan } from '@mui/material/colors';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ const App = () => {
             <Router>
                 <section>
                     <Routes>
-                        <Route path="/" element={ <Home /> }/>
+                        <Route path="/home" element={ <Home /> }/>
                     </Routes>
                 </section>
             </Router>
