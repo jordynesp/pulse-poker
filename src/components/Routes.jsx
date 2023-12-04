@@ -10,15 +10,17 @@ const Routes = () => {
     const { user } = useAuth();
 
     return (
-        <AppRoutes>
-            <Route exact path="/" element={ <Home /> }/>
-            { user ? (
-                <>
-                    <Route exact path="/create" element={ <CreateRoom /> }/>
-                    <Route path="/room/:id" element={ <Room /> }/>
-                </>
-            ) : null }
-        </AppRoutes>
+        <section style={{ height: 'calc(100vh - 64px)' }}>
+            <AppRoutes>
+                <Route exact path="/" element={ <Home /> }/>
+                { user ? (
+                    <>
+                        <Route exact path="/create" element={ <CreateRoom /> }/>
+                        <Route path="/room/:id" element={ <Room /> }/>
+                    </>
+                ) : null }
+            </AppRoutes>
+        </section>
     );
 };
 
