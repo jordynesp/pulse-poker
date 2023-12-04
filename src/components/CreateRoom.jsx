@@ -48,6 +48,10 @@ const CreateRoom = () => {
         setRoomCode('');
     }
 
+    const joinRoom = () => {
+        navigate(`/room/${roomCode}`);
+    }
+
     return (
         <Box className="flex flex-col justify-center items-center text-center h-full">
             <Paper className="w-full max-w-lg p-10">
@@ -89,7 +93,7 @@ const CreateRoom = () => {
                         <div className="flex justify-center items-center mt-6">
                             <Button fullWidth variant="outlined" onClick={resetRoom}>New Room</Button>
                             <div className="w-4"/>
-                            <Button fullWidth variant="contained">Join Room</Button>
+                            <Button fullWidth variant="contained" onClick={joinRoom}>Join Room</Button>
                         </div>
                     </>
                 ) : null}
