@@ -90,8 +90,10 @@ const NavBar = () => {
                                     onClose={handleCloseUserMenu}
                                 >
                                     <MenuItem key="Logout" onClick={handleCloseUserMenu}>
-                                        <Typography className="text-center pr-2" onClick={signOut}>Logout</Typography>
-                                        <LogoutTwoToneIcon />
+                                        <Typography className="flex justify-center text-center" onClick={signOut}>
+                                            Logout
+                                            <LogoutTwoToneIcon className="ml-2"/>
+                                        </Typography>
                                     </MenuItem>
                                 </Menu>
                             </>

@@ -7,6 +7,7 @@ import {
     Typography,
 } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddBoxTwoToneIcon from '@mui/icons-material/AddBoxTwoTone';
 import MeetingRoomTwoToneIcon from '@mui/icons-material/MeetingRoomTwoTone';
 
@@ -15,19 +16,23 @@ import { useAuth } from './AuthContext';
 
 const Home = () => {
     const { isSignedIn, isLoading } = useAuth();
+    const navigate = useNavigate();
+
+    const navigateCreate = () => {
+        navigate('/create');
+    };
 
     return (
-        <>
+        <Box className="flex justify-center items-center text-center h-full">
+
             { isLoading ? (
-                <Box className="flex justify-center items-center h-full">
-                    <CircularProgress size="4rem"/>
-                </Box>
+                <CircularProgress size="4rem"/>
             ) : null }
 
             { !isLoading && isSignedIn ? (
-                <Box className="flex justify-center items-center text-center h-full">
+                <>
                     <Card className="flex w-2/5 h-2/3 mr-6 p-2">
-                        <CardActionArea>
+                        <CardActionArea onClick={navigateCreate}>
                             <CardContent>
                                 <AddBoxTwoToneIcon color="primary" style={{ fontSize: '8rem'}}/>
                                 <Typography className="py-1" variant="h5" component="div">
@@ -53,13 +58,14 @@ const Home = () => {
                             </CardContent>
                         </CardActionArea>
                     </Card>
-                </Box>
+                </>
             ) : null }
 
             { !isLoading && !isSignedIn ? (
                 <SignIn />
             ) : null}
-        </>
+
+        </Box>
     );
 }
 
