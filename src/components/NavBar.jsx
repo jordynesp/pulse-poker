@@ -14,8 +14,8 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import LoginTwoToneIcon from '@mui/icons-material/LoginTwoTone';
 import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
+import { ReactComponent as GoogleSignInLogo } from '../icons/web_light_sq_SI.svg';
 
 import Logo from '../icons/Logo';
 import { useAuth } from './AuthContext';
@@ -96,7 +96,9 @@ const NavBar = () => {
                                 </Menu>
                             </>
                         ) : (
-                            <Button variant="outlined" color="secondary" onClick={signIn} endIcon={<LoginTwoToneIcon />}>Login</Button>
+                            <Button onClick={signIn}>
+                                <GoogleSignInLogo />
+                            </Button>
                         )}
                     </Box>
                 </Toolbar>
@@ -104,4 +106,5 @@ const NavBar = () => {
         </AppBar>
     );
 }
+
 export default NavBar;
