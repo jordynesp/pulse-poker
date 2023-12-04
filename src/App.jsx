@@ -30,7 +30,7 @@ const App = () => {
                         <section style={{ height: 'calc(100vh - 64px)' }}>
                             <Routes>
                                 <Route path="/" element={ <Home /> }/>
-                                <Route path="/room/create" element={ <CreateRoom /> }/>
+                                <Route path="/create" element={ <CreateRoom /> }/>
                             </Routes>
                         </section>
                     </Router>
