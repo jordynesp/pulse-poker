@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PersonIcon from '@mui/icons-material/Person';
 import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 import { ReactComponent as GoogleSignInLogo } from '../icons/web_light_sq_SI.svg';
 
@@ -22,7 +21,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const NavBar = () => {
     const navigate = useNavigate();
-    const { isSignedIn, signIn, signOut } = useAuth();
+    const { isSignedIn, signIn, signOut, user } = useAuth();
 
     const navigateHome = () => {
         navigate('/');
@@ -62,15 +61,12 @@ const NavBar = () => {
 
                     <Box sx={{ flexGrow: 1, display: 'flex' }} />
 
-
                     <Box sx={{ flexGrow: 0 }}>
                         { isSignedIn ? (
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar>
-                                            <PersonIcon />
-                                        </Avatar>
+                                        <Avatar alt={user.displayName} src={user.photoURL} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu
