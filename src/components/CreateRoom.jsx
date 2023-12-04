@@ -6,8 +6,8 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import { push, ref, set } from 'firebase/database';
 
 import { db } from '../firebase';
@@ -15,17 +15,11 @@ import { useAuth } from '../contexts/AuthContext';
 import CopyToClipBoardButton from './CopyToClipBoardButton';
 
 const CreateRoom = () => {
-    const { isSignedIn, user } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState('');
     const [roomCode, setRoomCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        if (!isSignedIn) {
-            navigate('/');
-        }
-    }, [isSignedIn]);
 
     const createNewRoom = async () => {
         setIsLoading(true);

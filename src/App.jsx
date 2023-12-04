@@ -1,12 +1,11 @@
 import React from 'react';
 import { cyan } from '@mui/material/colors';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import './App.css';
-import Home from './components/Home';
 import NavBar from './components/NavBar';
-import CreateRoom from './components/CreateRoom';
+import Routes from './components/Routes';
 import { AuthProvider } from './contexts/AuthContext';
 
 const theme = createTheme({
@@ -27,12 +26,7 @@ const App = () => {
                 <div className="bg-gray-100 h-screen">
                     <Router>
                         <NavBar />
-                        <section style={{ height: 'calc(100vh - 64px)' }}>
-                            <Routes>
-                                <Route path="/" element={ <Home /> }/>
-                                <Route path="/create" element={ <CreateRoom /> }/>
-                            </Routes>
-                        </section>
+                        <Routes />
                     </Router>
                 </div>
             </ThemeProvider>

@@ -15,7 +15,7 @@ import SignIn from './SignIn';
 import { useAuth } from '../contexts/AuthContext';
 
 const Home = () => {
-    const { isSignedIn, isLoading } = useAuth();
+    const { isLoading, user } = useAuth();
     const navigate = useNavigate();
 
     const navigateCreate = () => {
@@ -29,7 +29,7 @@ const Home = () => {
                 <CircularProgress size="4rem"/>
             ) : null }
 
-            { !isLoading && isSignedIn ? (
+            { !isLoading && user ? (
                 <>
                     <Card className="flex w-2/5 h-2/3 mr-6 p-2">
                         <CardActionArea onClick={navigateCreate}>
@@ -61,7 +61,7 @@ const Home = () => {
                 </>
             ) : null }
 
-            { !isLoading && !isSignedIn ? (
+            { !isLoading && !user ? (
                 <SignIn />
             ) : null}
 

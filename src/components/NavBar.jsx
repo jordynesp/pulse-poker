@@ -21,7 +21,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const NavBar = () => {
     const navigate = useNavigate();
-    const { isSignedIn, signIn, signOut, user } = useAuth();
+    const { signIn, signOut, user } = useAuth();
 
     const navigateHome = () => {
         navigate('/');
@@ -62,7 +62,7 @@ const NavBar = () => {
                     <Box sx={{ flexGrow: 1, display: 'flex' }} />
 
                     <Box sx={{ flexGrow: 0 }}>
-                        { isSignedIn ? (
+                        { user ? (
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

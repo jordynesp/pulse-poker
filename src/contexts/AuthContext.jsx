@@ -11,9 +11,8 @@ import { auth } from '../firebase';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -29,7 +28,6 @@ export const AuthProvider = ({ children }) => {
 
         try {
             await signInWithPopup(auth, provider);
-            setIsSignedIn(true);
         } catch (error) {
             console.error('Error signing in:', error);
         } finally {
@@ -42,7 +40,6 @@ export const AuthProvider = ({ children }) => {
 
         try {
             await signOut(auth)
-            setIsSignedIn(false);
         } catch (error) {
             console.error('Error signing out:', error);
         } finally {
@@ -51,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isSignedIn, isLoading, signIn: signInUser, signOut: signOutUser, user }}>
+        <AuthContext.Provider value={{ isLoading, signIn: signInUser, signOut: signOutUser, user }}>
             { children }
         </AuthContext.Provider>
     );
