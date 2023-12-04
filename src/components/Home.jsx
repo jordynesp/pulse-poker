@@ -12,7 +12,7 @@ import AddBoxTwoToneIcon from '@mui/icons-material/AddBoxTwoTone';
 import MeetingRoomTwoToneIcon from '@mui/icons-material/MeetingRoomTwoTone';
 
 import SignIn from './SignIn';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Home = () => {
     const { isSignedIn, isLoading } = useAuth();

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AddBoxTwoToneIcon from '@mui/icons-material/AddBoxTwoTone';
 
 import { useAuth } from './AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const CreateRoom = () => {
     const { isSignedIn } = useAuth();

@@ -18,7 +18,7 @@ import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 import { ReactComponent as GoogleSignInLogo } from '../icons/web_light_sq_SI.svg';
 
 import Logo from '../icons/Logo';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const NavBar = () => {
     const navigate = useNavigate();

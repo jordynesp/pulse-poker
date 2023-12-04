@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button } from '@mui/material';
 
-import { useAuth } from './AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignIn = () => {
     const { signIn } = useAuth();

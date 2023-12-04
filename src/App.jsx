@@ -7,7 +7,7 @@ import './App.css';
 import Home from './components/Home';
 import NavBar from './components/NavBar';
 import CreateRoom from './components/CreateRoom';
-import { AuthProvider } from './components/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 const theme = createTheme({
     palette: {
