@@ -2,6 +2,7 @@ import {
     AppBar,
     Avatar,
     Box,
+    Button,
     Container,
     IconButton,
     Menu,
@@ -11,6 +12,7 @@ import {
     Typography
 } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 
 import Logo from '../icons/Logo';
@@ -18,6 +20,13 @@ import Logo from '../icons/Logo';
 const settings = ['Logout'];
 
 const NavBar = () => {
+    const navigate = useNavigate();
+
+    const navigateHome = () => {
+        // TODO: if the user is not logged in then route to login page
+        navigate('/home');
+    };
+
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const handleOpenUserMenu = (event) => {
@@ -32,21 +41,23 @@ const NavBar = () => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Logo size={50} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{
-                            mr: 2,
-                            display: 'flex',
-                            fontWeight: 700,
-                            letterSpacing: '.2rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        PULSE POKER
-                    </Typography>
+                    <Button onClick={navigateHome}>
+                        <Logo size={50} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            sx={{
+                                mr: 2,
+                                display: 'flex',
+                                fontWeight: 700,
+                                letterSpacing: '.2rem',
+                                color: 'black',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            PULSE POKER
+                        </Typography>
+                    </Button>
 
                     <Box sx={{ flexGrow: 1, display: 'flex' }} />
 
