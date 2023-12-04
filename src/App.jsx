@@ -17,15 +17,17 @@ const theme = createTheme({
 
 const App = () => {
     return (
-        <ThemeProvider theme={theme}>
-            <NavBar />
-            <Router>
-                <section>
-                    <Routes>
-                        <Route path="/home" element={ <Home /> }/>
-                    </Routes>
-                </section>
-            </Router>
+        <ThemeProvider theme={ theme }>
+            <div className="bg-gray-100 h-screen">
+                <NavBar />
+                <Router>
+                    <section style={{ height: 'calc(100vh - 64px)' }}>
+                        <Routes>
+                            <Route path="/home" element={ <Home /> }/>
+                        </Routes>
+                    </section>
+                </Router>
+            </div>
         </ThemeProvider>
     );
 }
