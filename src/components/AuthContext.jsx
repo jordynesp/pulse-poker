@@ -1,21 +1,44 @@
 import React, { createContext, useState, useContext } from 'react';
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+
+import { auth } from '../firebase';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isSignedIn, setIsSignedIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const signIn = () => {
-        setIsSignedIn(true);
+    const signInUser = async () => {
+        setIsLoading(true);
+        const provider = new GoogleAuthProvider();
+
+        try {
+            await signInWithPopup(auth, provider);
+            setIsSignedIn(true);
+        } catch (error) {
+            console.error('Error signing in:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const signOut = () => {
-        setIsSignedIn(false);
+    const signOutUser = async () => {
+        setIsLoading(true);
+
+        try {
+            await signOut(auth)
+            setIsSignedIn(false);
+        } catch (error) {
+            console.error('Error signing out:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ isSignedIn, signIn, signOut }}>
-            {children}
+        <AuthContext.Provider value={{ isSignedIn, isLoading, signIn: signInUser, signOut: signOutUser }}>
+            { children }
         </AuthContext.Provider>
     );
 };

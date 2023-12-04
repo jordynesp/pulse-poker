@@ -3,6 +3,7 @@ import {
     Card,
     CardActionArea,
     CardContent,
+    CircularProgress,
     Typography,
 } from '@mui/material';
 import React from 'react';
@@ -13,11 +14,17 @@ import SignIn from './SignIn';
 import { useAuth } from './AuthContext';
 
 const Home = () => {
-    const { isSignedIn } = useAuth();
+    const { isSignedIn, isLoading } = useAuth();
 
     return (
         <>
-            { isSignedIn ? (
+            { isLoading ? (
+                <Box className="flex justify-center items-center h-full">
+                    <CircularProgress size="4rem"/>
+                </Box>
+            ) : null }
+
+            { !isLoading && isSignedIn ? (
                 <Box className="flex justify-center items-center text-center h-full">
                     <Card className="flex w-2/5 h-2/3 mr-6 p-2">
                         <CardActionArea>
@@ -47,9 +54,11 @@ const Home = () => {
                         </CardActionArea>
                     </Card>
                 </Box>
-            ) : (
+            ) : null }
+
+            { !isLoading && !isSignedIn ? (
                 <SignIn />
-            )}
+            ) : null}
         </>
     );
 }
