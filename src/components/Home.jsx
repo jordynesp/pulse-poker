@@ -9,8 +9,8 @@ import React from 'react';
 import AddBoxTwoToneIcon from '@mui/icons-material/AddBoxTwoTone';
 import MeetingRoomTwoToneIcon from '@mui/icons-material/MeetingRoomTwoTone';
 
+import SignIn from './SignIn';
 import { useAuth } from './AuthContext';
-import SignIn from "./SignIn";
 
 const Home = () => {
     const { isSignedIn } = useAuth();
@@ -47,8 +47,8 @@ const Home = () => {
                         </CardActionArea>
                     </Card>
                 </Box>
-                ) : (
-                    <SignIn />
+            ) : (
+                <SignIn />
             )}
         </>
     );
