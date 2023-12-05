@@ -31,7 +31,7 @@ const Room = () => {
     const [roomName, setRoomName] = useState('');
     const [users, setUsers] = useState([]);
     const [ticket, setTicket] = useState('');
-    const [showTicket, setShowTicket] = useState(false);
+    const [ticketName, setTicketName] = useState('');
     const [moderatorId, setModeratorId] = useState(false);
     const [votingStarted, setVotingStarted] = useState(false);
     const [votes, setVotes] = useState({});
@@ -122,13 +122,13 @@ const Room = () => {
 
     const handleClearTicket = () => {
         set(ref(db, `rooms/${id}/ticket`), '');
+        setTicketName('');
         setShowVotes(false);
         setVotes({});
     };
 
     const handleSubmitTicket = () => {
-        set(ref(db, `rooms/${id}/ticket`), ticket)
-            .then(r => setShowTicket(true));
+        set(ref(db, `rooms/${id}/ticket`), ticketName);
     };
 
     const handleVote = (vote) => {
@@ -141,8 +141,8 @@ const Room = () => {
         <Box className="text-center h-full">
             <Box className="flex justify-center items-center w-full">
                 <Paper className="w-full m-6 p-6">
-                    <Typography variant="h5" align="center">
-                        <strong>{ showTicket ? ticket : 'What would you like to estimate?' }</strong>
+                    <Typography noWrap variant="h5" align="center">
+                        <strong>{ roomName }</strong>
                     </Typography>
                 </Paper>
             </Box>
@@ -151,9 +151,6 @@ const Room = () => {
                 <Grid container className="h-full">
                     <Grid item xs={4}>
                         <Paper className="mx-6 p-2">
-                            <Typography variant="subtitle1" className="flex pl-1">
-                                <strong>{ roomName }</strong>
-                            </Typography>
                             <Typography variant="subtitle1" className="flex justify-between items-center text-center pl-1">
                                 { id }
                                 <CopyToClipBoardButton text={id}/>
@@ -168,29 +165,36 @@ const Room = () => {
                     <Grid item xs={8}>
                         <Paper className="flex flex-col justify-center items-center ml-1 mr-6 h-full">
                             <div className="w-2/3">
-                                { moderatorId === user.uid ? (
+                                { !ticket && moderatorId === user.uid && (
                                     <>
                                         <TextField
                                             label="Ticket Title"
                                             variant="outlined"
-                                            value={ticket}
-                                            onChange={(e) => setTicket(e.target.value)}
+                                            value={ticketName}
+                                            onChange={(e) => setTicketName(e.target.value)}
                                             fullWidth
                                         />
                                         <div className="flex justify-center items-center mt-6">
-                                            <Button fullWidth variant="outlined">Clear Ticket</Button>
+                                            <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
                                             <div className="w-4"/>
                                             <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleSubmitTicket}>
                                                 Create Ticket
                                             </Button>
                                         </div>
                                     </>
-                                ) : (
+                                )}
+
+                                { !ticket && moderatorId !== user.uid && (
+                                    <Typography variant="h5">
+                                        Waiting for room moderator to create ticket...
+                                    </Typography>
+                                )}
+
+                                { ticket && (
                                     <>
-                                        {ticket ? (
-                                            <p>Ticket: {ticket}</p>
-                                        ) : (
-                                            <p>Waiting for moderator to set ticket...</p>
+                                        <div>Ticket: {ticket}</div>
+                                        { moderatorId === user.uid && (
+                                            <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
                                         )}
                                     </>
                                 )}
