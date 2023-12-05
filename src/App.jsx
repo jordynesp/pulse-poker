@@ -22,16 +22,16 @@ const theme = createTheme({
 
 const App = () => {
     return (
-        <AuthProvider>
-            <ThemeProvider theme={ theme }>
-                <div className="bg-gray-100 h-screen">
-                    <Router>
+        <ThemeProvider theme={ theme }>
+            <div className="bg-gray-100 h-screen">
+                <Router>
+                    <AuthProvider>
                         <NavBar />
                         <Routes />
-                    </Router>
-                </div>
-            </ThemeProvider>
-        </AuthProvider>
+                    </AuthProvider>
+                </Router>
+            </div>
+        </ThemeProvider>
     );
 }
 

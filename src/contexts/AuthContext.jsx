@@ -4,6 +4,7 @@ import React, {
     useContext,
     useEffect
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 import { auth } from '../firebase';
@@ -11,12 +12,17 @@ import { auth } from '../firebase';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             setUser(user);
+
+            if (!user) {
+                navigate('/');
+            }
         });
 
         return () => unsubscribe();
