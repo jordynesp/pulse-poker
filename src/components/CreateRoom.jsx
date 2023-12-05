@@ -46,11 +46,15 @@ const CreateRoom = () => {
     const resetRoom = () => {
         setRoomName('');
         setRoomCode('');
-    }
+    };
 
     const joinRoom = () => {
         navigate(`/room/${roomCode}`);
-    }
+    };
+
+    const navigateHome = () => {
+        navigate('/');
+    };
 
     return (
         <Box className="flex flex-col justify-center items-center text-center h-full">
@@ -73,7 +77,9 @@ const CreateRoom = () => {
                         margin="normal"
                         fullWidth
                     />
-                    <div className="mt-6">
+                    <div className="flex justify-center items-center mt-6">
+                        <Button fullWidth variant="outlined" onClick={navigateHome}>Cancel</Button>
+                        <div className="w-4"/>
                         <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={createNewRoom}>
                             Create Room
                         </Button>
