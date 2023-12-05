@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { db } from '../firebase';
+import RoomUsers from './RoomUsers';
 import { useAuth } from '../contexts/AuthContext';
 
 const Room = () => {
@@ -33,7 +34,10 @@ const Room = () => {
 
             if (snapshot.exists()) {
                 await update(child(roomRef, 'users'), {
-                    [user.uid]: true
+                    [user.uid]: {
+                        displayName: user.displayName || '',
+                        photoURL: user.photoURL || '',
+                    },
                 });
             } else {
                 navigate('/');
@@ -66,7 +70,9 @@ const Room = () => {
             if (snapshot.exists()) {
                 const usersData = snapshot.val();
                 const userList = Object.keys(usersData).map((userId) => ({
-                    userId,
+                    uid: userId,
+                    displayName: usersData[userId].displayName,
+                    photoURL: usersData[userId].photoURL,
                     isModerator: usersData[userId].isModerator || false,
                 }));
 
@@ -121,6 +127,7 @@ const Room = () => {
 
     return (
         <Box className="flex justify-center items-center text-center h-full">
+            <RoomUsers users={users}/>
             <div>
                 <h2>Room: {id}</h2>
                 <h3>Users in the Room:</h3>
