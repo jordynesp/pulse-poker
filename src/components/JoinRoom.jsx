@@ -7,22 +7,45 @@ import {
     Typography
 } from '@mui/material';
 import React, { useState } from 'react';
+import { get, ref } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
+import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 
 const JoinRoom = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
+    const [error, setError] = useState('');
     const [roomCode, setRoomCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const joinRoom = () => {
-        navigate(`/room/${roomCode}`);
+    const joinRoom = async () => {
+        setIsLoading(true);
+
+        const roomExists = await checkRoomExistence();
+
+        if (roomCode !== '' && roomExists) {
+            navigate(`/room/${roomCode}`);
+        } else {
+            setError('Room does not exist. Try a different code.')
+        }
+
+        setIsLoading(false);
     };
 
     const navigateHome = () => {
         navigate('/');
+    };
+
+    const checkRoomExistence = async () => {
+        try {
+            const roomRef = ref(db,`rooms/${roomCode}`);
+            const snapshot = await get(roomRef);
+
+            return snapshot.exists();
+        } catch (error) {
+            console.error('Error checking room existence:', error);
+        }
     };
 
     return (
@@ -40,6 +63,8 @@ const JoinRoom = () => {
                         </Typography>
                         <TextField
                             label="Room Code"
+                            error={error !== ''}
+                            helperText={error}
                             variant="outlined"
                             value={roomCode}
                             onChange={(e) => setRoomCode(e.target.value)}
