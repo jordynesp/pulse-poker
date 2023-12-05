@@ -51,7 +51,7 @@ const NavBar = () => {
                                 display: 'flex',
                                 fontWeight: 700,
                                 letterSpacing: '.2rem',
-                                color: 'black',
+                                color: 'white',
                                 textDecoration: 'none',
                             }}
                         >

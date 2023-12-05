@@ -74,7 +74,7 @@ const CreateRoom = () => {
                         fullWidth
                     />
                     <div className="mt-6">
-                        <Button fullWidth variant="contained" color="primary" onClick={createNewRoom}>
+                        <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={createNewRoom}>
                             Create Room
                         </Button>
                     </div>
@@ -93,7 +93,7 @@ const CreateRoom = () => {
                         <div className="flex justify-center items-center mt-6">
                             <Button fullWidth variant="outlined" onClick={resetRoom}>New Room</Button>
                             <div className="w-4"/>
-                            <Button fullWidth variant="contained" onClick={joinRoom}>Join Room</Button>
+                            <Button fullWidth variant="contained" style={{ color: 'white'}} onClick={joinRoom}>Join Room</Button>
                         </div>
                     </>
                 ) : null}

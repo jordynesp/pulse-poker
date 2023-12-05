@@ -12,6 +12,7 @@ const theme = createTheme({
     palette: {
         primary: {
             main: cyan[500],
+            // maybe make button te xt
         },
         secondary: {
             main: '#000000',
