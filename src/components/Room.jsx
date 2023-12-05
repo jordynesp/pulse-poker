@@ -1,4 +1,12 @@
 import {
+    Box,
+    Button,
+    Grid,
+    Paper,
+    TextField,
+    Typography,
+} from '@mui/material';
+import {
     child,
     get,
     off,
@@ -9,7 +17,6 @@ import {
 } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Grid, Paper, Typography } from '@mui/material';
 
 import { db } from '../firebase';
 import RoomUsers from './RoomUsers';
@@ -24,6 +31,7 @@ const Room = () => {
     const [roomName, setRoomName] = useState('');
     const [users, setUsers] = useState([]);
     const [ticket, setTicket] = useState('');
+    const [showTicket, setShowTicket] = useState(false);
     const [moderatorId, setModeratorId] = useState(false);
     const [votingStarted, setVotingStarted] = useState(false);
     const [votes, setVotes] = useState({});
@@ -119,7 +127,8 @@ const Room = () => {
     };
 
     const handleSubmitTicket = () => {
-        set(ref(db, `rooms/${id}/ticket`), ticket);
+        set(ref(db, `rooms/${id}/ticket`), ticket)
+            .then(r => setShowTicket(true));
     };
 
     const handleVote = (vote) => {
@@ -133,7 +142,7 @@ const Room = () => {
             <Box className="flex justify-center items-center w-full">
                 <Paper className="w-full m-6 p-6">
                     <Typography variant="h5" align="center">
-                        { roomName }
+                        <strong>{ showTicket ? ticket : 'What would you like to estimate?' }</strong>
                     </Typography>
                 </Paper>
             </Box>
@@ -143,10 +152,10 @@ const Room = () => {
                     <Grid item xs={4}>
                         <Paper className="mx-6 p-2">
                             <Typography variant="subtitle1" className="flex pl-1">
-                                Share this room code:
+                                <strong>{ roomName }</strong>
                             </Typography>
                             <Typography variant="subtitle1" className="flex justify-between items-center text-center pl-1">
-                                <strong>{ id }</strong>
+                                { id }
                                 <CopyToClipBoardButton text={id}/>
                             </Typography>
                         </Paper>
@@ -157,8 +166,35 @@ const Room = () => {
                     </Grid>
 
                     <Grid item xs={8}>
-                        <Paper className="justify-center ml-1 mr-6 h-full bg-green-500">
-                            Status here
+                        <Paper className="flex flex-col justify-center items-center ml-1 mr-6 h-full">
+                            <div className="w-2/3">
+                                { moderatorId === user.uid ? (
+                                    <>
+                                        <TextField
+                                            label="Ticket Title"
+                                            variant="outlined"
+                                            value={ticket}
+                                            onChange={(e) => setTicket(e.target.value)}
+                                            fullWidth
+                                        />
+                                        <div className="flex justify-center items-center mt-6">
+                                            <Button fullWidth variant="outlined">Clear Ticket</Button>
+                                            <div className="w-4"/>
+                                            <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleSubmitTicket}>
+                                                Create Ticket
+                                            </Button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        {ticket ? (
+                                            <p>Ticket: {ticket}</p>
+                                        ) : (
+                                            <p>Waiting for moderator to set ticket...</p>
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         </Paper>
                     </Grid>
                 </Grid>
