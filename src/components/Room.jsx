@@ -130,7 +130,7 @@ const Room = () => {
 
     return (
         <Box className="text-center h-full">
-            <Box className="w-full flex justify-center items-center">
+            <Box className="flex justify-center items-center w-full">
                 <Paper className="w-full m-6 p-6">
                     <Typography variant="h5" align="center">
                         { roomName }
@@ -141,7 +141,7 @@ const Room = () => {
             <Box className="h-3/4">
                 <Grid container className="h-full">
                     <Grid item xs={4}>
-                        <Paper className="w-full max-w-xs mx-6 p-2">
+                        <Paper className="mx-6 p-2">
                             <Typography variant="subtitle1" className="flex pl-1">
                                 Share this room code:
                             </Typography>
@@ -151,13 +151,13 @@ const Room = () => {
                             </Typography>
                         </Paper>
 
-                        <Paper className="w-full max-w-xs mx-6 mt-6">
+                        <Paper className="mx-6 mt-6">
                             <RoomUsers users={users}/>
                         </Paper>
                     </Grid>
 
                     <Grid item xs={8}>
-                        <Paper className="justify-center mr-6 h-full bg-green-500">
+                        <Paper className="justify-center ml-1 mr-6 h-full bg-green-500">
                             Status here
                         </Paper>
                     </Grid>
