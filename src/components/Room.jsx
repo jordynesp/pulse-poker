@@ -113,10 +113,12 @@ const Room = () => {
 
     const handleStartVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), true);
+        setVotingStarted(true);
     };
 
     const handleEndVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), false);
+        setVotingStarted(false);
         setShowVotes(true);
     };
 
@@ -192,9 +194,26 @@ const Room = () => {
 
                                 { ticket && (
                                     <>
-                                        <div>Ticket: {ticket}</div>
+                                        <div>
+                                            <Typography variant="h5">
+                                                <strong>Ticket:</strong> {ticket}
+                                            </Typography>
+                                        </div>
+
                                         { moderatorId === user.uid && (
-                                            <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
+                                            <div className="flex justify-center items-center mt-6">
+                                                <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
+                                                <div className="w-4"/>
+                                                { !votingStarted ? (
+                                                    <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleStartVoting}>
+                                                        Start Voting
+                                                    </Button>
+                                                ) : (
+                                                    <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleEndVoting}>
+                                                        End Voting
+                                                    </Button>
+                                                )}
+                                            </div>
                                         )}
                                     </>
                                 )}
