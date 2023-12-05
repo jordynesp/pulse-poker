@@ -9,16 +9,19 @@ import {
 } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 
 import { db } from '../firebase';
 import RoomUsers from './RoomUsers';
 import { useAuth } from '../contexts/AuthContext';
+import CopyToClipBoardButton from './CopyToClipBoardButton';
 
 const Room = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const [roomName, setRoomName] = useState('');
     const [users, setUsers] = useState([]);
     const [ticket, setTicket] = useState('');
     const [moderatorId, setModeratorId] = useState(false);
@@ -126,62 +129,40 @@ const Room = () => {
     const isVotingAllowed = user && user.uid && !votingStarted && ticket;
 
     return (
-        <Box className="flex justify-center items-center text-center h-full">
-            <RoomUsers users={users}/>
-            <div>
-                <h2>Room: {id}</h2>
-                <h3>Users in the Room:</h3>
-                <ul>
-                    {users.map((user) => (
-                        <li key={user.userId}>
-                            {user.isModerator ? (
-                                <>
-                                    <span>{user.userId} (Moderator)</span>
-                                    { isModerator ? <span>(You are the moderator)</span> : null }
-                                </>
-                            ) : (
-                                <span>{user.userId}</span>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+        <Box className="text-center h-full">
+            <Box className="w-full flex justify-center items-center">
+                <Paper className="w-full m-6 p-6">
+                    <Typography variant="h5" align="center">
+                        { roomName }
+                    </Typography>
+                </Paper>
+            </Box>
 
-                { isModerator && <input type="text" value={ticket} onChange={(e) => setTicket(e.target.value)} /> }
-                { isModerator && <button onClick={handleSubmitTicket}>Submit Ticket</button> }
+            <Box className="h-3/4">
+                <Grid container className="h-full">
+                    <Grid item xs={4}>
+                        <Paper className="w-full max-w-xs mx-6 p-2">
+                            <Typography variant="subtitle1" className="flex pl-1">
+                                Share this room code:
+                            </Typography>
+                            <Typography variant="subtitle1" className="flex justify-between items-center text-center pl-1">
+                                <strong>{ id }</strong>
+                                <CopyToClipBoardButton text={id}/>
+                            </Typography>
+                        </Paper>
 
-                { isModerator && (
-                    <div>
-                        <button onClick={handleStartVoting} disabled={!ticket || votingStarted}>
-                            Start Voting
-                        </button>
-                        <button onClick={handleEndVoting} disabled={!votingStarted}>
-                            End Voting
-                        </button>
-                        <button onClick={handleClearTicket}>Clear Ticket</button>
-                    </div>
-                )}
+                        <Paper className="w-full max-w-xs mx-6 mt-6">
+                            <RoomUsers users={users}/>
+                        </Paper>
+                    </Grid>
 
-                { isVotingAllowed && (
-                    <div>
-                        <h3>Vote:</h3>
-                        <button onClick={() => handleVote('Option A')}>Vote Option A</button>
-                        <button onClick={() => handleVote('Option B')}>Vote Option B</button>
-                    </div>
-                )}
-
-                { showVotes && (
-                    <div>
-                        <h3>Voting Results:</h3>
-                        <ul>
-                            {Object.keys(votes).map((userId) => (
-                                <li key={userId}>
-                                    {userId}: {votes[userId]}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-            </div>
+                    <Grid item xs={8}>
+                        <Paper className="justify-center mr-6 h-full bg-green-500">
+                            Status here
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Box>
         </Box>
     );
 }
