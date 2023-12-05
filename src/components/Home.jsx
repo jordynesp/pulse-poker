@@ -22,6 +22,10 @@ const Home = () => {
         navigate('/create');
     };
 
+    const navigateJoin = () => {
+        navigate('/join');
+    };
+
     return (
         <Box className="flex justify-center items-center text-center h-full">
 
@@ -46,7 +50,7 @@ const Home = () => {
                     </Card>
 
                     <Card className="flex w-2/5 h-2/3 ml-6 p-2">
-                        <CardActionArea>
+                        <CardActionArea onClick={navigateJoin}>
                             <CardContent>
                                 <MeetingRoomTwoToneIcon color="primary" style={{ fontSize: '8rem'}}/>
                                 <Typography className="py-1" variant="h5" component="div">

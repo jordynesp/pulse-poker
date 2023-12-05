@@ -3,6 +3,7 @@ import { Route, Routes as AppRoutes } from 'react-router-dom';
 
 import Home from './Home';
 import Room from './Room';
+import JoinRoom from './JoinRoom';
 import CreateRoom from './CreateRoom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -16,6 +17,7 @@ const Routes = () => {
                 { user ? (
                     <>
                         <Route exact path="/create" element={ <CreateRoom /> }/>
+                        <Route exact path="/join" element={ <JoinRoom /> }/>
                         <Route path="/room/:id" element={ <Room /> }/>
                     </>
                 ) : null }
