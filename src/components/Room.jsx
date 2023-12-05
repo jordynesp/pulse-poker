@@ -47,11 +47,22 @@ const Room = () => {
         checkRoomExistence();
 
         const roomRef = ref(db,`rooms/${id}`);
+        const moderatorRef = child(roomRef, 'moderator');
         const usersRef = child(roomRef, 'users');
         const ticketRef = child(roomRef, 'ticket');
         const votesRef = child(roomRef, 'votes');
 
-        const usersListener = onValue(usersRef, (snapshot) => {
+        onValue(moderatorRef, (snapshot) => {
+            const moderatorId = snapshot.val();
+
+            if (moderatorId === user.uid) {
+                setIsModerator(true);
+            } else {
+                setIsModerator(false);
+            }
+        });
+
+        onValue(usersRef, (snapshot) => {
             if (snapshot.exists()) {
                 const usersData = snapshot.val();
                 const userList = Object.keys(usersData).map((userId) => ({
@@ -63,13 +74,13 @@ const Room = () => {
             }
         });
 
-        const ticketListener = onValue(ticketRef, (snapshot) => {
+        onValue(ticketRef, (snapshot) => {
             if (snapshot.exists()) {
                 setTicket(snapshot.val());
             }
         });
 
-        const votesListener = onValue(votesRef, (snapshot) => {
+        onValue(votesRef, (snapshot) => {
             if (snapshot.exists()) {
                 setVotes(snapshot.val());
                 setShowVotes(true);
