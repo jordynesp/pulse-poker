@@ -7,7 +7,6 @@ import {
     set,
     update,
 } from 'firebase/database';
-import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -22,7 +21,7 @@ const Room = () => {
 
     const [users, setUsers] = useState([]);
     const [ticket, setTicket] = useState('');
-    const [isModerator, setIsModerator] = useState(false);
+    const [moderatorId, setModeratorId] = useState(false);
     const [votingStarted, setVotingStarted] = useState(false);
     const [votes, setVotes] = useState({});
     const [showVotes, setShowVotes] = useState(false);
@@ -33,6 +32,10 @@ const Room = () => {
             const snapshot = await get(roomRef);
 
             if (snapshot.exists()) {
+                const roomData = snapshot.val();
+                const name = roomData.roomName || '';
+                setRoomName(name);
+
                 await update(child(roomRef, 'users'), {
                     [user.uid]: {
                         displayName: user.displayName || '',
@@ -49,7 +52,9 @@ const Room = () => {
 
     useEffect(() => {
         checkRoomExistence();
+    }, []);
 
+    useEffect(() => {
         const roomRef = ref(db,`rooms/${id}`);
         const moderatorRef = child(roomRef, 'moderator');
         const usersRef = child(roomRef, 'users');
@@ -58,12 +63,7 @@ const Room = () => {
 
         onValue(moderatorRef, (snapshot) => {
             const moderatorId = snapshot.val();
-
-            if (moderatorId === user.uid) {
-                setIsModerator(true);
-            } else {
-                setIsModerator(false);
-            }
+            setModeratorId(moderatorId);
         });
 
         onValue(usersRef, (snapshot) => {
@@ -73,7 +73,7 @@ const Room = () => {
                     uid: userId,
                     displayName: usersData[userId].displayName,
                     photoURL: usersData[userId].photoURL,
-                    isModerator: usersData[userId].isModerator || false,
+                    isModerator: userId === moderatorId,
                 }));
 
                 setUsers(userList);
