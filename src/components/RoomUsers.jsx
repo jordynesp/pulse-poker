@@ -15,7 +15,7 @@ const RoomUsers = ({ users, showVotes }) => {
         <List>
             {users.map((user, index) => (
                 <>
-                    <ListItem key={user.uid}>
+                    <ListItem key={index}>
                         <ListItemAvatar>
                             <Avatar alt={user.displayName} src={user.photoURL}/>
                         </ListItemAvatar>

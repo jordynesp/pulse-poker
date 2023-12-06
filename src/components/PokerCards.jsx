@@ -34,9 +34,9 @@ const PokerCards = ({ handleVote, votingStarted }) => {
     return (
         <div className="w-full">
             <div className="flex justify-center">
-                {firstFivePokerCardValues.map((value, index = 0) => (
+                {firstFivePokerCardValues.map((value) => (
                     <PlanningPokerCard
-                        key={index}
+                        key={value}
                         value={value}
                         handleVote={handleCardClick}
                         isSelected={value === selectedVote}
@@ -45,9 +45,9 @@ const PokerCards = ({ handleVote, votingStarted }) => {
                 ))}
             </div>
             <div className="flex justify-center">
-                {lastFivePokerCardValues.map((value, index = 5) => (
+                {lastFivePokerCardValues.map((value) => (
                     <PlanningPokerCard
-                        key={index + 5}
+                        key={value}
                         value={value}
                         handleVote={handleCardClick}
                         isSelected={value === selectedVote}

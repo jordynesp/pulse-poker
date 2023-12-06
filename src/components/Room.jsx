@@ -270,7 +270,7 @@ const Room = () => {
                                                     [`& .${pieArcLabelClasses.root}`]: {
                                                         fill: 'white',
                                                         fontWeight: 'bold',
-                                                        fontSize: '2rem'
+                                                        fontSize: '2rem',
                                                     },
                                                 }}
                                             />
