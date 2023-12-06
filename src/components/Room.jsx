@@ -34,10 +34,10 @@ const Room = () => {
     const [users, setUsers] = useState([]);
     const [ticket, setTicket] = useState('');
     const [ticketName, setTicketName] = useState('');
-    const [moderatorId, setModeratorId] = useState(false);
     const [votingStarted, setVotingStarted] = useState(false);
     const [votes, setVotes] = useState([]);
     const [showVotes, setShowVotes] = useState(false);
+    const [isModerator, setIsModerator] = useState(false);
 
     const checkRoomExistence = async () => {
         try {
@@ -53,8 +53,11 @@ const Room = () => {
                     [user.uid]: {
                         displayName: user.displayName || '',
                         photoURL: user.photoURL || '',
+                        isModerator: user.uid === roomData['moderator'],
                     },
                 });
+
+                setIsModerator(user.uid === roomData['moderator']);
             } else {
                 navigate('/');
             }
@@ -69,17 +72,11 @@ const Room = () => {
 
     useEffect(() => {
         const roomRef = ref(db,`rooms/${id}`);
-        const moderatorRef = child(roomRef, 'moderator');
         const usersRef = child(roomRef, 'users');
         const ticketRef = child(roomRef, 'ticket');
         const votesRef = child(roomRef, 'votes');
         const votingStartedRef = child(roomRef, 'votingStarted');
         const showVotesRef = child(roomRef, 'showVotes');
-
-        onValue(moderatorRef, (snapshot) => {
-            const moderatorId = snapshot.val();
-            setModeratorId(moderatorId);
-        });
 
         onValue(usersRef, (snapshot) => {
             if (snapshot.exists()) {
@@ -88,7 +85,7 @@ const Room = () => {
                     uid: userId,
                     displayName: usersData[userId].displayName,
                     photoURL: usersData[userId].photoURL,
-                    isModerator: userId === moderatorId,
+                    isModerator: usersData[userId].isModerator,
                 }));
 
                 setUsers(userList);
@@ -120,7 +117,6 @@ const Room = () => {
         });
 
         return () => {
-            off(moderatorRef);
             off(usersRef);
             off(ticketRef);
             off(votesRef);
@@ -183,7 +179,7 @@ const Room = () => {
                 <Grid container className="h-full">
                     <Grid item xs={4}>
                         <Paper className="mx-6 p-2">
-                            <Typography variant="subtitle1" className="flex justify-between items-center text-center pl-1">
+                            <Typography noWrap variant="subtitle1" className="flex justify-between items-center text-center pl-1">
                                 { id }
                                 <CopyToClipBoardButton text={id}/>
                             </Typography>
@@ -197,7 +193,7 @@ const Room = () => {
                     <Grid item xs={8}>
                         <Paper className="flex flex-col justify-center items-center ml-1 mr-6 h-full">
                             <div className="flex flex-col justify-center items-center w-2/3">
-                                { !ticket && moderatorId === user.uid && (
+                                { !ticket && isModerator && (
                                     <div className="w-10/12">
                                         <TextField
                                             label="Ticket Title"
@@ -216,7 +212,7 @@ const Room = () => {
                                     </div>
                                 )}
 
-                                { !ticket && moderatorId !== user.uid && (
+                                { !ticket && !isModerator && (
                                     <Typography variant="h5">
                                         Waiting for room moderator to create ticket...
                                     </Typography>
@@ -260,7 +256,7 @@ const Room = () => {
                                     </div>
                                 )}
 
-                                { ticket && moderatorId === user.uid && (
+                                { ticket && isModerator && (
                                     <div className="flex justify-center items-center w-10/12 mt-6">
                                         <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
                                         <div className="w-4"/>
