@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
 import React, { useState } from 'react';
+import { Button, Typography } from '@mui/material';
 
 const PlanningPokerCard = ({ value, handleVote, isSelected, votingStarted }) => {
     const handleClick = () => {
@@ -14,7 +14,9 @@ const PlanningPokerCard = ({ value, handleVote, isSelected, votingStarted }) => 
             style={{ color: isSelected ? 'white' : '' }}
             className="w-1/5 h-36"
         >
-            {value}
+            <Typography variant="h5">
+                { value }
+            </Typography>
         </Button>
     );
 };
