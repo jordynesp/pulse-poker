@@ -11,7 +11,6 @@ import { get, ref } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 import { db } from '../firebase';
-import { useAuth } from '../contexts/AuthContext';
 
 const JoinRoom = () => {
     const navigate = useNavigate();
