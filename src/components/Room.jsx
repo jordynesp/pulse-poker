@@ -20,6 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { db } from '../firebase';
 import RoomUsers from './RoomUsers';
+import PokerCards from './PokerCards';
 import { useAuth } from '../contexts/AuthContext';
 import CopyToClipBoardButton from './CopyToClipBoardButton';
 
@@ -71,6 +72,7 @@ const Room = () => {
         const usersRef = child(roomRef, 'users');
         const ticketRef = child(roomRef, 'ticket');
         const votesRef = child(roomRef, 'votes');
+        const votingStartedRef = child(roomRef, 'votingStarted');
 
         onValue(moderatorRef, (snapshot) => {
             const moderatorId = snapshot.val();
@@ -104,26 +106,34 @@ const Room = () => {
             }
         });
 
+        onValue(votingStartedRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setVotingStarted(snapshot.val());
+            }
+        });
+
         return () => {
+            off(moderatorRef);
             off(usersRef);
             off(ticketRef);
             off(votesRef);
+            off(votingStartedRef);
         };
     }, [id, user.uid]);
 
     const handleStartVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), true);
-        setVotingStarted(true);
     };
 
     const handleEndVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), false);
-        setVotingStarted(false);
         setShowVotes(true);
     };
 
     const handleClearTicket = () => {
         set(ref(db, `rooms/${id}/ticket`), '');
+        set(ref(db, `rooms/${id}/votes`), '');
+        set(ref(db, `rooms/${id}/votingStarted`), false);
         setTicketName('');
         setShowVotes(false);
         setVotes({});
@@ -136,8 +146,6 @@ const Room = () => {
     const handleVote = (vote) => {
         set(ref(db, `rooms/${id}/votes/${user.uid}`), vote);
     };
-
-    const isVotingAllowed = user && user.uid && !votingStarted && ticket;
 
     return (
         <Box className="text-center h-full">
@@ -166,7 +174,7 @@ const Room = () => {
 
                     <Grid item xs={8}>
                         <Paper className="flex flex-col justify-center items-center ml-1 mr-6 h-full">
-                            <div className="w-2/3">
+                            <div className="flex flex-col justify-center items-center w-2/3">
                                 { !ticket && moderatorId === user.uid && (
                                     <>
                                         <TextField
@@ -176,7 +184,7 @@ const Room = () => {
                                             onChange={(e) => setTicketName(e.target.value)}
                                             fullWidth
                                         />
-                                        <div className="flex justify-center items-center mt-6">
+                                        <div className="flex justify-center items-center w-full mt-6">
                                             <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
                                             <div className="w-4"/>
                                             <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleSubmitTicket}>
@@ -194,14 +202,15 @@ const Room = () => {
 
                                 { ticket && (
                                     <>
-                                        <div>
-                                            <Typography variant="h5">
+                                        <div className="w-10/12">
+                                            <Typography gutterBottom variant="h5">
                                                 <strong>Ticket:</strong> {ticket}
                                             </Typography>
+                                            <PokerCards handleVote={handleVote} votingStarted={votingStarted} />
                                         </div>
 
                                         { moderatorId === user.uid && (
-                                            <div className="flex justify-center items-center mt-6">
+                                            <div className="flex justify-center items-center w-10/12 mt-6">
                                                 <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
                                                 <div className="w-4"/>
                                                 { !votingStarted ? (
