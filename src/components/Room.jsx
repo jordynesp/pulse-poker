@@ -54,6 +54,7 @@ const Room = () => {
                         displayName: user.displayName || '',
                         photoURL: user.photoURL || '',
                         isModerator: user.uid === roomData['moderator'],
+                        voted: false,
                     },
                 });
 
@@ -86,6 +87,7 @@ const Room = () => {
                     displayName: usersData[userId].displayName,
                     photoURL: usersData[userId].photoURL,
                     isModerator: usersData[userId].isModerator,
+                    voted: usersData[userId].voted,
                 }));
 
                 setUsers(userList);
@@ -125,7 +127,9 @@ const Room = () => {
         };
     }, [id, user.uid]);
 
-    const handleStartVoting = () => {
+    const handleStartVoting = async () => {
+        await clearVotes();
+        set(ref(db, `rooms/${id}/votes`), '');
         set(ref(db, `rooms/${id}/votingStarted`), true);
         set(ref(db, `rooms/${id}/showVotes`), false);
     };
@@ -135,13 +139,28 @@ const Room = () => {
         set(ref(db, `rooms/${id}/showVotes`), true);
     };
 
-    const handleClearTicket = () => {
+    const handleClearTicket = async () => {
         set(ref(db, `rooms/${id}/ticket`), '');
         set(ref(db, `rooms/${id}/votes`), '');
         set(ref(db, `rooms/${id}/votingStarted`), false);
         set(ref(db, `rooms/${id}/showVotes`), false);
+        await clearVotes();
         setTicketName('');
     };
+
+    const clearVotes = async () => {
+        const roomRef = ref(db, `rooms/${id}/users`);
+        const snapshot = await get(roomRef);
+
+        if (snapshot.exists()) {
+            const usersData = snapshot.val();
+            Object.keys(usersData).forEach((uid) => {
+                update(child(roomRef, uid), {
+                    voted: false,
+                });
+            });
+        }
+    }
 
     const handleSubmitTicket = () => {
         set(ref(db, `rooms/${id}/ticket`), ticketName);
@@ -149,6 +168,7 @@ const Room = () => {
 
     const handleVote = (vote) => {
         set(ref(db, `rooms/${id}/votes/${user.uid}`), vote);
+        set(ref(db, `rooms/${id}/users/${user.uid}/voted`), vote);
     };
 
     const convertVotesToChartData = (votes) => {
@@ -186,7 +206,7 @@ const Room = () => {
                         </Paper>
 
                         <Paper className="mx-6 mt-6">
-                            <RoomUsers users={users}/>
+                            <RoomUsers users={users} showVotes={showVotes}/>
                         </Paper>
                     </Grid>
 
@@ -229,30 +249,36 @@ const Room = () => {
 
                                 { ticket && showVotes && (
                                     <div className="flex justify-center items-center w-10/12">
-                                        <PieChart
-                                            series={[{
-                                                data: votes,
-                                                arcLabel: (item) => `${item.label}`,
-                                                highlightScope: {faded: 'global', highlighted: 'item'},
-                                                faded: {innerRadius: 30, additionalRadius: -30, color: 'gray'},
-                                            }]}
-                                            width={400}
-                                            height={200}
-                                            margin={{ left: 95 }}
-                                            slotProps={{
-                                                legend: {
-                                                    hidden: true,
-                                                    position: { vertical: 'bottom', horizontal: 'middle' },
-                                                },
-                                            }}
-                                            sx={{
-                                                [`& .${pieArcLabelClasses.root}`]: {
-                                                    fill: 'white',
-                                                    fontWeight: 'bold',
-                                                    fontSize: '2rem'
-                                                },
-                                            }}
-                                        />
+                                        { votes.length > 0 ? (
+                                            <PieChart
+                                                series={[{
+                                                    data: votes,
+                                                    arcLabel: (item) => `${item.label}`,
+                                                    highlightScope: {faded: 'global', highlighted: 'item'},
+                                                    faded: {innerRadius: 30, additionalRadius: -30, color: 'gray'},
+                                                }]}
+                                                width={400}
+                                                height={200}
+                                                margin={{ left: 95 }}
+                                                slotProps={{
+                                                    legend: {
+                                                        hidden: true,
+                                                        position: { vertical: 'bottom', horizontal: 'middle' },
+                                                    },
+                                                }}
+                                                sx={{
+                                                    [`& .${pieArcLabelClasses.root}`]: {
+                                                        fill: 'white',
+                                                        fontWeight: 'bold',
+                                                        fontSize: '2rem'
+                                                    },
+                                                }}
+                                            />
+                                        ) : (
+                                            <Typography gutterBottom variant="h5">
+                                                No votes submitted
+                                            </Typography>
+                                        )}
                                     </div>
                                 )}
 
