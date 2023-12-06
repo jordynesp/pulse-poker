@@ -15,9 +15,9 @@ import {
     set,
     update,
 } from 'firebase/database';
-import { PieChart } from '@mui/x-charts/PieChart';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { pieArcLabelClasses, PieChart } from '@mui/x-charts/PieChart';
 
 import { db } from '../firebase';
 import RoomUsers from './RoomUsers';
@@ -36,7 +36,7 @@ const Room = () => {
     const [ticketName, setTicketName] = useState('');
     const [moderatorId, setModeratorId] = useState(false);
     const [votingStarted, setVotingStarted] = useState(false);
-    const [votes, setVotes] = useState({});
+    const [votes, setVotes] = useState([]);
     const [showVotes, setShowVotes] = useState(false);
 
     const checkRoomExistence = async () => {
@@ -103,7 +103,7 @@ const Room = () => {
 
         onValue(votesRef, (snapshot) => {
             if (snapshot.exists()) {
-                setVotes(snapshot.val());
+                setVotes(convertVotesToChartData(snapshot.val()));
             }
         });
 
@@ -155,6 +155,20 @@ const Room = () => {
         set(ref(db, `rooms/${id}/votes/${user.uid}`), vote);
     };
 
+    const convertVotesToChartData = (votes) => {
+        const voteCounts = {};
+
+        Object.values(votes).forEach((value) => {
+            voteCounts[value] = (voteCounts[value] || 0) + 1;
+        });
+
+        return Object.entries(voteCounts).map(([value, count], index) => ({
+            id: index,
+            value: count,
+            label: `${value}`,
+        }))
+    };
+
     return (
         <Box className="text-center h-full">
             <Box className="flex justify-center items-center w-full">
@@ -184,7 +198,7 @@ const Room = () => {
                         <Paper className="flex flex-col justify-center items-center ml-1 mr-6 h-full">
                             <div className="flex flex-col justify-center items-center w-2/3">
                                 { !ticket && moderatorId === user.uid && (
-                                    <>
+                                    <div className="w-10/12">
                                         <TextField
                                             label="Ticket Title"
                                             variant="outlined"
@@ -199,7 +213,7 @@ const Room = () => {
                                                 Create Ticket
                                             </Button>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
 
                                 { !ticket && moderatorId !== user.uid && (
@@ -209,30 +223,41 @@ const Room = () => {
                                 )}
 
                                 { ticket && !showVotes && (
-                                    <>
-                                        <div className="w-10/12">
-                                            <Typography gutterBottom variant="h5">
-                                                <strong>Ticket:</strong> {ticket}
-                                            </Typography>
-                                            <PokerCards handleVote={handleVote} votingStarted={votingStarted} />
-                                        </div>
-                                    </>
+                                    <div className="w-10/12">
+                                        <Typography gutterBottom variant="h5">
+                                            <strong>Ticket:</strong> {ticket}
+                                        </Typography>
+                                        <PokerCards handleVote={handleVote} votingStarted={votingStarted} />
+                                    </div>
                                 )}
 
                                 { ticket && showVotes && (
-                                    <PieChart
-                                        series={[
-                                            {
-                                                data: [
-                                                    { id: 0, value: 10, label: 'series A' },
-                                                    { id: 1, value: 15, label: 'series B' },
-                                                    { id: 2, value: 20, label: 'series C' },
-                                                ],
-                                            },
-                                        ]}
-                                        width={400}
-                                        height={200}
-                                    />
+                                    <div className="flex justify-center items-center w-10/12">
+                                        <PieChart
+                                            series={[{
+                                                data: votes,
+                                                arcLabel: (item) => `${item.label}`,
+                                                highlightScope: {faded: 'global', highlighted: 'item'},
+                                                faded: {innerRadius: 30, additionalRadius: -30, color: 'gray'},
+                                            }]}
+                                            width={400}
+                                            height={200}
+                                            margin={{ left: 95 }}
+                                            slotProps={{
+                                                legend: {
+                                                    hidden: true,
+                                                    position: { vertical: 'bottom', horizontal: 'middle' },
+                                                },
+                                            }}
+                                            sx={{
+                                                [`& .${pieArcLabelClasses.root}`]: {
+                                                    fill: 'white',
+                                                    fontWeight: 'bold',
+                                                    fontSize: '2rem'
+                                                },
+                                            }}
+                                        />
+                                    </div>
                                 )}
 
                                 { ticket && moderatorId === user.uid && (
