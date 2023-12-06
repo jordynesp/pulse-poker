@@ -15,6 +15,7 @@ import {
     set,
     update,
 } from 'firebase/database';
+import { PieChart } from '@mui/x-charts/PieChart';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -73,6 +74,7 @@ const Room = () => {
         const ticketRef = child(roomRef, 'ticket');
         const votesRef = child(roomRef, 'votes');
         const votingStartedRef = child(roomRef, 'votingStarted');
+        const showVotesRef = child(roomRef, 'showVotes');
 
         onValue(moderatorRef, (snapshot) => {
             const moderatorId = snapshot.val();
@@ -102,7 +104,6 @@ const Room = () => {
         onValue(votesRef, (snapshot) => {
             if (snapshot.exists()) {
                 setVotes(snapshot.val());
-                setShowVotes(true);
             }
         });
 
@@ -112,31 +113,38 @@ const Room = () => {
             }
         });
 
+        onValue(showVotesRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setShowVotes(snapshot.val());
+            }
+        });
+
         return () => {
             off(moderatorRef);
             off(usersRef);
             off(ticketRef);
             off(votesRef);
             off(votingStartedRef);
+            off(showVotesRef);
         };
     }, [id, user.uid]);
 
     const handleStartVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), true);
+        set(ref(db, `rooms/${id}/showVotes`), false);
     };
 
     const handleEndVoting = () => {
         set(ref(db, `rooms/${id}/votingStarted`), false);
-        setShowVotes(true);
+        set(ref(db, `rooms/${id}/showVotes`), true);
     };
 
     const handleClearTicket = () => {
         set(ref(db, `rooms/${id}/ticket`), '');
         set(ref(db, `rooms/${id}/votes`), '');
         set(ref(db, `rooms/${id}/votingStarted`), false);
+        set(ref(db, `rooms/${id}/showVotes`), false);
         setTicketName('');
-        setShowVotes(false);
-        setVotes({});
     };
 
     const handleSubmitTicket = () => {
@@ -200,7 +208,7 @@ const Room = () => {
                                     </Typography>
                                 )}
 
-                                { ticket && (
+                                { ticket && !showVotes && (
                                     <>
                                         <div className="w-10/12">
                                             <Typography gutterBottom variant="h5">
@@ -208,23 +216,39 @@ const Room = () => {
                                             </Typography>
                                             <PokerCards handleVote={handleVote} votingStarted={votingStarted} />
                                         </div>
-
-                                        { moderatorId === user.uid && (
-                                            <div className="flex justify-center items-center w-10/12 mt-6">
-                                                <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
-                                                <div className="w-4"/>
-                                                { !votingStarted ? (
-                                                    <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleStartVoting}>
-                                                        Start Voting
-                                                    </Button>
-                                                ) : (
-                                                    <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleEndVoting}>
-                                                        End Voting
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
                                     </>
+                                )}
+
+                                { ticket && showVotes && (
+                                    <PieChart
+                                        series={[
+                                            {
+                                                data: [
+                                                    { id: 0, value: 10, label: 'series A' },
+                                                    { id: 1, value: 15, label: 'series B' },
+                                                    { id: 2, value: 20, label: 'series C' },
+                                                ],
+                                            },
+                                        ]}
+                                        width={400}
+                                        height={200}
+                                    />
+                                )}
+
+                                { ticket && moderatorId === user.uid && (
+                                    <div className="flex justify-center items-center w-10/12 mt-6">
+                                        <Button fullWidth variant="outlined" onClick={handleClearTicket}>Clear Ticket</Button>
+                                        <div className="w-4"/>
+                                        { !votingStarted ? (
+                                            <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleStartVoting}>
+                                                Start Voting
+                                            </Button>
+                                        ) : (
+                                            <Button fullWidth variant="contained" color="primary" style={{ color: 'white'}} onClick={handleEndVoting}>
+                                                End Voting
+                                            </Button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </Paper>
