@@ -1,6 +1,8 @@
 # PulsePoker
 
-An online planning poker environment for agile estimation. 
+An online planning poker environment for agile estimation.
+
+![Alt text](/../screenshots/screenshots/PulsePokerHome.png?raw=true "Optional Title")
 
 ## Description
 
